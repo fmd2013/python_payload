@@ -5,9 +5,10 @@
 
 import os
 import os.path
+import struct
 
-n_gram = 4
-rootdir = '/home/zsy/python_code/wyp_4_18/sip2'
+n_gram = 2
+rootdir = '/home/zsy/python_code/wyp_4_18/test'
 result_list = {}
 
 
@@ -19,7 +20,7 @@ def dir_list(path):
 
         if os.path.isfile(filepath):
             # print(filepath)
-            file_object = open(filepath)
+            file_object = open(filepath, 'rb')
 
             try:
                 all_the_text = file_object.read()
@@ -38,9 +39,15 @@ def dir_list(path):
                     num = file_long
             else:
                 continue
+            # print(all_the_text[2])
 
             for i in range(1, num-n_gram+2):
-                n_gram_temp = "".join(all_the_text[i:i + n_gram])  # .encode('utf-8')
+                n_gram_temp = ""
+                for j in range(i, i+n_gram):
+                    if j == i:
+                        n_gram_temp += str(int(all_the_text[j]))
+                    else:
+                        n_gram_temp += ','+str(int(all_the_text[j]))
                 if n_gram_temp not in result_list:  # 词频统计
                     result_list[n_gram_temp] = 0  # 典型的字典操作
                 result_list[n_gram_temp] += 1
@@ -49,7 +56,7 @@ def dir_list(path):
 
 if __name__ == '__main__':
     dir_list(rootdir)
-    print(result_list)
+    # print(result_list)
     sort_list = sorted(result_list.items(), key=lambda item: item[1])  # 转为list
     for i in sort_list:
         print(i)
